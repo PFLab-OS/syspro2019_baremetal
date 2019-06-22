@@ -41,6 +41,7 @@ void heap_insert(int element) {
 
   int now = heap_size;
   while (heap_array[now / 2] < element) {
+    if(now == 0) break;
     heap_array[now] = heap_array[now / 2];
     now /= 2;
   }
@@ -79,7 +80,7 @@ void friend_main() {
   for(int i = 0; i < 0x20; i++) {
     heap_insert(i);
   }
-  for(int i = 0; i < 0x10000; i++) {
+  for(int i = 0; i < 0x80000; i++) {
     heap_insert(i);
     heap_delete_max();
   }
