@@ -62,11 +62,10 @@ int heap_delete_max() {
       child++;
     }
 
-    if (lastElement < heap_array[child]) {
-      heap_array[now] = heap_array[child];
-    } else {
+    if (lastElement > heap_array[child]) {
       break;
     }
+    heap_array[now] = heap_array[child];
   }
 
   heap_array[now] = lastElement;
@@ -75,7 +74,7 @@ int heap_delete_max() {
 }
 
 void friend_main() {
-  heap_array[0] = 0xfffffff;
+  heap_array[0] = ~0U >> 1;
 
   for(int i = 0; i < 0x20; i++) {
     heap_insert(i);
@@ -96,9 +95,8 @@ void friend_main() {
   // コア0のCPUがheapのサイズを確認
   if(c == 0) {
     if(heap_size == 0x20 * 4) {
-      __sync_fetch_and_add(&SHARED_SYMBOL(test_value), 1);
+      SHARED_SYMBOL(test_value) = 1;
     }
-
   }
   __sync_fetch_and_add(&SHARED_SYMBOL(sync_flag), 1);
 }
