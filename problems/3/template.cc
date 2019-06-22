@@ -43,8 +43,10 @@ void heap_insert(int element) {
   heap_array[heap_size] = element;
 
   int now = heap_size;
-  while (heap_array[now / 2] < element) {
-    if(now == 0) break;
+  while(heap_array[now / 2] < element) {
+    if(now == 0) {
+      break;
+    }
     heap_array[now] = heap_array[now / 2];
     now /= 2;
   }
@@ -58,14 +60,14 @@ int heap_delete_max() {
   maxElement = heap_array[1];
   lastElement = heap_array[heap_size--];
 
-  for (now = 1; now * 2 <= heap_size; now = child) {
+  for(now = 1; now * 2 <= heap_size; now = child) {
     child = now * 2;
 
-    if (child != heap_size && heap_array[child + 1] > heap_array[child]) {
+    if(child != heap_size && heap_array[child + 1] > heap_array[child]) {
       child++;
     }
 
-    if (lastElement > heap_array[child]) {
+    if(lastElement > heap_array[child]) {
       break;
     }
     heap_array[now] = heap_array[child];
