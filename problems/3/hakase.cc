@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include "shared.h"
 
-EXPORT_SYMBOL(printf);
+//EXPORT_SYMBOL(printf);
 
 int test_main() {
   int r;
@@ -14,6 +14,7 @@ int test_main() {
   }
 
   SHARED_SYMBOL(sync_flag) = 0;
+  SHARED_SYMBOL(test_value) = 0;
 
   printf("starting up friend cores...");
   fflush(stdout);
@@ -30,9 +31,10 @@ int test_main() {
 
 int main(int argc, const char **argv) {
   if (test_main() > 0) {
-    if (SHARED_SYMBOL( test_value ) == 0x12345678) {
-    printf("SystemJudge:AC\n");
-    return 0;
+    if (SHARED_SYMBOL( test_value ) != 0) {
+      printf("SystemJudge:AC\n");
+      return 0;
+    }
   } 
   printf("SystemJudge:WA\n");
   return 255;

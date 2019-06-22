@@ -5,7 +5,7 @@
 int64_t SHARED_SYMBOL(sync_flag);
 uint64_t SHARED_SYMBOL(test_value);
 
-#define HEAP_MAX_NODE_NUM 0x6
+#define HEAP_MAX_NODE_NUM 0x200 
 
 int heap_array[HEAP_MAX_NODE_NUM];
 int heap_size = 0;
@@ -13,15 +13,23 @@ int heap_size = 0;
 int cnt = 0;
 //ローカル環境でprintfデバッグしたいときは，
 //以下の行とhakase.ccの7行目をコメントアウトを外してください
-int (*EXPORTED_SYMBOL(printf))(const char *format, ...);
+//int (*EXPORTED_SYMBOL(printf))(const char *format, ...);
 //
 //<printfの使い方>
 //OFFLOAD_FUNC(printf,args...);
 //のようにOFFLOAD_FUNC経由で呼び出します
+
+static volatile int _lock = 0;
  
-void lock() {
+volatile void lock() {
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //add codes here
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
-void unlock() {
+volatile void unlock() {
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //add codes here
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
 
@@ -32,7 +40,7 @@ void heap_insert(int element) {
   heap_array[heap_size] = element;
 
   int now = heap_size;
-  while (now != 1 && heap_array[now / 2] < element) {
+  while (heap_array[now / 2] < element) {
     heap_array[now] = heap_array[now / 2];
     now /= 2;
   }
@@ -66,22 +74,30 @@ int heap_delete_max() {
 }
 
 void friend_main() {
-  if(__sync_fetch_and_add(&cnt, 1) != 0 ){
-    __sync_fetch_and_add(&SHARED_SYMBOL(sync_flag), 1);
-    return;
+  heap_array[0] = 0xfffffff;
+
+  for(int i = 0; i < 0x20; i++) {
+    heap_insert(i);
   }
-  heap_array[0] = 0x10000000;
+  for(int i = 0; i < 0x10000; i++) {
+    heap_insert(i);
+    heap_delete_max();
+  }
 
-  heap_insert(2);
-  heap_insert(5);
-  heap_insert(1);
-  heap_insert(3);
-  heap_insert(4);
-  heap_delete_max();
-  heap_delete_max();
-  heap_delete_max();
-  heap_delete_max();
-  heap_delete_max();
+  // コア番号取得
+  int c = __sync_fetch_and_add(&cnt, 1);
+  
+  // 全てのCPUがココに到達するまで待機
+  while(cnt != 4) {
+    __asm__ volatile("":::"memory");
+  }
 
+  // コア0のCPUがheapのサイズを確認
+  if(c == 0) {
+    if(heap_size == 0x20 * 4) {
+      __sync_fetch_and_add(&SHARED_SYMBOL(test_value), 1);
+    }
+
+  }
   __sync_fetch_and_add(&SHARED_SYMBOL(sync_flag), 1);
 }
