@@ -32,6 +32,9 @@ volatile void unlock() {
   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
+void heap_init() {
+  heap_array[0] = ~0U >> 1;
+}
 
 // 参考https://www.sanfoundry.com/c-program-implement-heap/
 void heap_insert(int element) {
@@ -73,8 +76,9 @@ int heap_delete_max() {
   return maxElement;
 }
 
+
 void friend_main() {
-  heap_array[0] = ~0U >> 1;
+  heap_init();
 
   for(int i = 0; i < 0x20; i++) {
     heap_insert(i);
