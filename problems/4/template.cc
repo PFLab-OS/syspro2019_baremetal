@@ -3,7 +3,7 @@
 #include "shared.h"
 
 int64_t SHARED_SYMBOL(sync_flag);
-uint32_t SHARED_SYMBOL(test_value[0x20]);
+uint64_t SHARED_SYMBOL(test_value[0x20]);
 void* SHARED_SYMBOL(hpet_addr);
 
 int cnt = 0;
