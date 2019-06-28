@@ -15,9 +15,9 @@ int cnt = 0;
 //OFFLOAD_FUNC(printf,args...);
 //のようにOFFLOAD_FUNC経由で呼び出します
 
-uint32_t get_main_counter_value(uint32_t *reg_base) {
+uint64_t get_main_counter_value(void *reg_base) {
   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  //return  reg_base[<!!!add codes here!!!>];
+  //add codes here
   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
