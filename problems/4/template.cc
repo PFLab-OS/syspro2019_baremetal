@@ -15,7 +15,7 @@ int cnt = 0;
 //OFFLOAD_FUNC(printf,args...);
 //のようにOFFLOAD_FUNC経由で呼び出します
 
-uint64_t get_main_counter_value(void *reg_base) {
+uint64_t hpet_main_counter(void *reg_base) {
   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   //add codes here
   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -69,7 +69,7 @@ void friend_main() {
   uint32_t* reg_base = (uint32_t*)0x70000000UL;
   
   for(int i = 0; i < 0x20; i++) {
-    SHARED_SYMBOL(test_value[i]) = get_main_counter_value(reg_base);
+    SHARED_SYMBOL(test_value[i]) = hpet_main_counter(reg_base);
   }
 
   __sync_fetch_and_add(&SHARED_SYMBOL(sync_flag), 1);
